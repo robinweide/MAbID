@@ -771,7 +771,7 @@ mabid_populationplot <- function(sce,
     ggplot2::geom_vline(xintercept = vline, colour = line_colour,lty = line_type) +
     ggplot2::scale_x_continuous(expand = c(0,0), breaks = seq(start,end, length.out = 5),
                                 labels = seq(start,end, length.out = 5)/divby) +
-    ggplot2::scale_color_manual(values = colorRampPalette(erithacus::colour_blind_palette())(length(unique(dat_population$group))))+
+    # ggplot2::scale_color_manual(values = colorRampPalette(erithacus::colour_blind_palette())(length(unique(dat_population$group))))+
     ggplot2::coord_cartesian(ylim = ylim, xlim = c(start,end)) +
     ggplot2::theme(axis.text.x = ggplot2::element_blank()) +
     ggplot2::theme(
@@ -901,9 +901,9 @@ mabid_SVD <- function(sce, svx = 'SV_1', svy = 'SV_2', colour_by = NULL, shape_b
     col = kleur,
     shape = vorm
   )) +
-    erithacus::erithacus_theme(ratio = 'equal') +
+    # erithacus::erithacus_theme(ratio = 'equal') +
     ggplot2::labs(x = svx, y = svy) +
-    ggplot2::scale_colour_manual(values = erithacus::colour_blind_palette()) +
+    #ggplot2::scale_colour_manual(values = erithacus::colour_blind_palette()) +
     ggplot2::geom_point(size = 2) +
     ggplot2::scale_shape_manual(values = scale_vorm) +
     ggplot2::labs(
@@ -1042,7 +1042,7 @@ mabid_mirrorplot <- function(sce, chrom = 'chr1', start = 0, end = 50000000, mir
     ggplot2::facet_grid(mirr ~ .) +
     ggseas::stat_rollapplyr(geom = 'area',width = smooth_kernel,align = 'center',FUN = mean) +
     ggplot2::labs(y = legend_label, x= paste0(chrom, ifelse(divby != 1, ' (Mb)',' (bp)'))) +
-    erithacus::theme_npg(box = T,panel_width = panel_width,asp = plot_ratio,tip = tip)+
+    # erithacus::theme_npg(box = T,panel_width = panel_width,asp = plot_ratio,tip = tip)+
     ggplot2::guides(fill = "none") +
     ggplot2::geom_hline(yintercept = 0,colour = 'black', size = 0.25) +
     ggplot2::scale_x_continuous(expand = c(0,0), limits = c(start,end),
