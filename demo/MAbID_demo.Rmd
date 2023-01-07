@@ -1,0 +1,65 @@
+---
+title: "MAbID demo"
+output: 
+  html_document: 
+    theme: paper
+    toc: yes
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook to demonstrate MAbID data-analysis by the `MAbIDR`-package.
+
+# required libaries
+```{r pkgs, message=FALSE, warning=FALSE}
+library(mabidR)
+library(BSgenome.Hsapiens.UCSC.hg19)
+library(ggthemes) # for plotting
+library(tidyverse)  # for plotting
+library(ComplexHeatmap) # for correlation-plot
+```
+
+# loading
+```{r loading}
+# get files
+example_data <- c("H3K27me3" = "example_data//index_10.SBC_010.ABBC_003.TTAA..10k.hdf5",
+                 "LaminB1" = "example_data//index_22.SBC_001.ABBC_003.TTAA..10k.hdf5", 
+                  "H3K4me1" = "example_data//index_22.SBC_002.ABBC_003.TTAA..10k.hdf5")
+
+mabid_dataset <- load_mabid(signal_hdf5 = example_data,
+                            map_hdf5 = "example_data/hg19_mabid.TTAA.readlength_70.min_mapq_10.bowtie2.binsize_10000.hdf5",
+                            control_hdf5 = "example_data/TTAA_K562_10kb.hdf5",
+                            bin_size = 10e3, 
+                            sample_name = names(example_data),
+                            reference = BSgenome.Hsapiens.UCSC.hg19)
+```
+
+# tracks
+```{r tracks}
+mabid_trackplot(mabid_dataset, chrom = 'chr1', start = 50e6, end = 75e6) + 
+  ggplot2::theme_bw()
+
+# or directly get data to plot yourself
+raw <- mabid_get_track(mabid_dataset, chrom = 'chr1', start = 50e6, end = 75e6) 
+with(raw[raw$sample == 'H3K27me3',], plot(start, value, t= 'h'))
+
+# or as raster:
+mabid_rasterplot(mabid_dataset, chrom = 'chr1', start = 50e6, end = 75e6, 
+                 assay_to_use = 'tpm', rownames = T, divpal = T, zlim = c(0,10)) 
+```
+
+# correlations
+```{r correlation}
+mabid_corplot(mabid_dataset, rownames = T, method = 'pearson',
+              assay_to_use = 'logcounts',zlim = c(-1,1))
+```
+
+# dimensionality reduction
+```{r pca}
+data <- as.matrix(assay(mabid_dataset, 'logcounts'))
+pcs <- as.data.frame(prcomp(data)$rotation)
+pcs$sample <- rownames(pcs)
+ggplot(pcs, aes(x = PC1, y = PC2, label = sample)) +
+  theme_bw() +
+  geom_point() +
+  geom_text()
+```
+

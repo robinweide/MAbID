@@ -1,0 +1,39 @@
+#!/usr/bin/env Rscript
+
+# args[1] is the sheet.csv: index_23,SBC_026,ABBC_011,GATC
+# args[4] is the output-filepath
+args = commandArgs(trailingOnly=TRUE) 
+
+# set variables
+suppressPackageStartupMessages(library(stringr))
+path_sbc      <- args[2] # '/home/hub_kind/rvanderweide/projects/MAb-ID/current_pipeline/current_adapters/scAbID_SCB_1-384.tsv' #data/current_adapters/scAbID_SCB_1-384.tsv' #
+path_abbc     <- args[3] # '/home/hub_kind/rvanderweide/projects/MAb-ID/current_pipeline/current_adapters/MAbID_ABBC_1-7_11-15.tsv' #'data/current_adapters/MAbID_ABBC_1-7_11-15.tsv' #
+fa_constant   <- c('AGGGCCGC')
+
+sheet <- read.csv(args[1],stringsAsFactors = F)
+
+# load adapters
+fa_sbc <- read.delim(path_sbc, h = F)
+fa_sbc <- setNames(gsub('-','',gsub('3-','NNN',fa_sbc[,2])), gsub('SCB','SBC',fa_sbc[,1]))
+fa_abbc <- read.delim(path_abbc, h = F)[,1:2]
+fa_abbc <- fa_abbc[grepl('ABBC',fa_abbc[,1]),]
+fa_abbc <- setNames(stringr::str_trim(gsub(fa_constant,'',fa_abbc[,2])),fa_abbc[,1])
+
+# get all parts
+tmp_a <- fa_abbc[sheet$ABBC_barcode]
+tmp_b <- fa_sbc[sheet$SBC_barcode]
+tmp_c <- sheet$RS
+
+# make entries
+
+part_name <- apply(cbind('>',names(tmp_b), names(tmp_a), tmp_c),1,paste0, collapse = '.')
+part_name <- gsub('>.','>',part_name)
+part_seq  <- unname(apply(cbind('^',tmp_b,fa_constant,tmp_a),1,paste0, collapse = ''))
+
+all_adapters <- setNames(part_seq,part_name)
+all_adapters_txt <- c(rbind(names(all_adapters),all_adapters))
+
+# export
+write.table(all_adapters_txt,
+            args[4],
+            quote = F, row.names = F,col.names = F)
