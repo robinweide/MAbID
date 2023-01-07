@@ -1,8 +1,8 @@
-# MAbID
+# Combinatorial single-cell profiling of all major chromatin types with MAbID
 
 Thank you for your interest in MAbID. 
 
-Table of contents -------------------------------------------------------------
+## Table of contents
 
 1. mabid_pipeline
   - manual.html, containing the complete instructions to map raw MAbID data
@@ -15,7 +15,7 @@ Table of contents -------------------------------------------------------------
   - test datasets
   - Rmd and html example-code and results 
 
-Requirements -----------------------------------------------------------------
+## Requirements
 
 R (4.1)
 Cutadapt (3.0)
@@ -23,7 +23,7 @@ Bowtie2 (2.2.9)
 samtools (1.10)
 scDamAndTools (1.0)
 
-Installation ------------------------------------------------------------------
+## Installation
 
 To install MAbIDR, run install.packages("MAbIDR_1.0.0.tar.gz", type="source"). 
 This should take less then 5 minutes.
