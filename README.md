@@ -2,6 +2,8 @@
 
 Thank you for your interest in MAbID. 
 
+**This is the developmental branch: see https://github.com/KindLab/MAbID for the stable version!!!**
+
 ## Table of contents
 
 1. mabid_pipeline
